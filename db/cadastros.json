@@ -1,0 +1,26 @@
+[
+    {
+        "codigo": 1,
+        "nome": "Geymerson",
+        "cpf": 12448531439,
+        "conta": 956151,
+        "agencia": 1234,
+        "saldo": 200.0
+    },
+    {
+        "codigo": 2,
+        "nome": "maria",
+        "cpf": 12345678939,
+        "conta": 111826,
+        "agencia": 1234,
+        "saldo": 0.0
+    },
+    {
+        "codigo": 3,
+        "nome": "joao",
+        "cpf": 98765432139,
+        "conta": 960730,
+        "agencia": 1234,
+        "saldo": 0.0
+    }
+]
