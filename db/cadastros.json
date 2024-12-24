@@ -5,7 +5,7 @@
         "cpf": 12448531439,
         "conta": 956151,
         "agencia": 1234,
-        "saldo": 3700.0
+        "saldo": 5000.0
     },
     {
         "codigo": 2,
@@ -22,5 +22,13 @@
         "conta": 960730,
         "agencia": 1234,
         "saldo": 0.0
+    },
+    {
+        "codigo": 4,
+        "nome": "Amalia",
+        "cpf": 12812096438,
+        "conta": 274444,
+        "agencia": 1234,
+        "saldo": 130.0
     }
 ]
