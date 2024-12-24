@@ -141,6 +141,7 @@ class Pessoas:
             return
 
         # Atualizar o saldo do registro
+        
         registro['saldo'] += valor
 
         print("Depósito realizado com sucesso!")
