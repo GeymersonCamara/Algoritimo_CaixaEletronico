@@ -143,7 +143,8 @@ class Pessoas:
         # Atualizar o saldo do registro
         registro['saldo'] += valor
 
-        print(f"Depósito realizado com sucesso! \n Novo saldo: R${registro['saldo']:.2f}")
+        print("Depósito realizado com sucesso!")
+        print(f"Novo saldo: R${registro['saldo']:.2f}")
         
         try:
             # Abrir o arquivo JSON para leitura
