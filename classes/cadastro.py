@@ -191,7 +191,7 @@ class Pessoas:
             if valor <= 0:
                 print("Erro: O valor de saque deve ser maior que zero.")
                 return
-            if self.saldo < valor:
+            if valor > registro['saldo']:
                 print("Valor indisponivel")
                 return
         except ValueError:
