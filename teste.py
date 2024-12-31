@@ -1,4 +1,4 @@
-palavra = "Python"
-resultado = palavra.center(12, "-")
-print(resultado)
-# Saída: "---Python---"
+from classes.cadastro import Pessoas
+
+conta2 = Pessoas()
+print(conta2.extrato())

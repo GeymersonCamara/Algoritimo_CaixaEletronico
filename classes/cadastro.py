@@ -1,6 +1,7 @@
 import json
 import random
 from datetime import datetime
+from datetime import timedelta
 
 class Pessoas:
     AGENCIA_FIXA = 1234  # Número fixo da agência
@@ -72,9 +73,9 @@ class Pessoas:
         def dados(self, *args, **kwargs):
             print('Por favor, insira seus dados para acesso:')
             try:
-                cpf = int(input('CPF: '))
-                conta = int(input('Conta: '))
-                agencia = int(input('Agência: '))
+                self.cpf2 = int(input('CPF: '))
+                self.conta2 = int(input('Conta: '))
+                self.agencia2 = int(input('Agência: '))
             except ValueError:
                 print("Erro: Digite apenas números.")
                 return
@@ -97,7 +98,7 @@ class Pessoas:
                 return
 
             for registro in lista:
-                if registro['cpf'] == cpf and registro['conta'] == conta and registro['agencia'] == agencia:
+                if registro['cpf'] == self.cpf2 and registro['conta'] == self.conta2 and registro['agencia'] == self.agencia2:
                     # Permite a execução da função decorada
                     return func(self, registro, *args, **kwargs)
 
@@ -108,25 +109,54 @@ class Pessoas:
     @verificar_usuario
     def extrato(self, registro):
         """
-        Exibe o saldo do usuário autenticado.
+        Exibe todos os saques realizados no dia atual pelo usuário autenticado.
         """
-        
-        print(" ")
-        palavra = "Extrato"
-        resultado = palavra.center(50, "=")
-        print(resultado)
-        print(" ")
-        
-        print(f"Seu saldo é: {registro['saldo']}")
-        
-        print(" ")
-        caractere = "="
-        tamanho = 50
-        linha = caractere * tamanho
-        print(linha)
-        
-        hoje = datetime.now()
-        print(hoje)
+        try:
+            # Cabeçalho
+            print("\n" + "Extrato - Saques do Dia".center(50, "=") + "\n")
+
+            # Verifica se o arquivo saque.json existe e carrega os dados
+            try:
+                with open('db/saque.json', 'r') as file:
+                    lista = json.load(file)
+
+            except Exception:
+                print("Nenhum registro de saques encontrado.")
+                lista = []  # Lista vazia se o arquivo não existir
+            except json.JSONDecodeError:
+                print("Erro: O arquivo 'saque.json' está vazio ou possui formato inválido.")
+                lista = []  # Lista vazia se o arquivo for inválido
+
+            # Obter a data atual no formato "dd-mm-yyyy"
+            data_atual = datetime.now().strftime("%d-%m-%Y")
+
+            # Filtra os registros de saques do usuário atual realizados hoje
+            registros_hoje = [
+                item for item in lista
+                if item.get("CPF") == str(registro["cpf"]) and
+                item.get("Conta") == str(registro["conta"]) and
+                item.get("Agencia") == str(registro["agencia"]) and
+                item.get("data", "").startswith(data_atual)  # Verifica apenas o início da data
+]
+            
+            # Exibe os registros encontrados
+            if registros_hoje:
+                print(f"Saques realizados em {data_atual}:")
+                for item in registros_hoje:
+                    print(f"- Hora: {item['data'][11:]}, Valor: R${float(item['valor']):.2f}")
+            else:
+                print(f"Nenhum saque realizado em {data_atual}.")
+
+            # Exibição do saldo atual
+            print(f"\nSeu saldo atual é: R${registro['saldo']:.2f}")
+
+            # Rodapé
+            print("=" * 50)
+            print(datetime.now().strftime("%d-%m-%Y"))
+
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
+
         
     @verificar_usuario
     def depositar(self, registro):
@@ -134,8 +164,8 @@ class Pessoas:
         Realiza um depósito na conta do usuário autenticado e atualiza o saldo no JSON.
         """
         try:
-            valor = float(input("Digite o valor do depósito: "))
-            if valor <= 0:
+            self.valor = float(input("Digite o valor do depósito: "))
+            if self.valor <= 0:
                 print("Erro: O valor do depósito deve ser maior que zero.")
                 return
         except ValueError:
@@ -143,7 +173,7 @@ class Pessoas:
             return
 
         # Atualizar o saldo do registro
-        registro['saldo'] += valor
+        registro['saldo'] += self.valor
         
         print(" ")
         palavra = "Deposito"
@@ -187,19 +217,40 @@ class Pessoas:
         Realiza um depósito na conta do usuário autenticado e atualiza o saldo no JSON.
         """
         try:
-            valor = float(input("Digite o valor que deseja sacar: "))
-            if valor <= 0:
+            self.valor = float(input("Digite o valor que deseja sacar: "))
+            if self.valor <= 0:
                 print("Erro: O valor de saque deve ser maior que zero.")
                 return
-            if valor > registro['saldo']:
+            if self.valor > registro['saldo']:
                 print("Valor indisponivel")
                 return
         except ValueError:
             print("Erro: Digite um valor numérico válido.")
             return
 
+        #Registro de saque
+        def valordata():
+            valor = self.valor
+            data = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            print(f"Valor: {valor} \nData: {data}")
+            return {"valor": valor, "data": data,
+                    "CPF": self.cpf2, "Conta": self.conta2, "Agencia": self.agencia2}
+
+
+        
+        try:
+            with open('db/saque.json', 'r') as file:
+                lista = json.load(file)
+        except Exception:
+            lista = []
+            
+        lista.append(valordata())
+        
+        with open('db/saque.json', 'w') as file:
+            json.dump(lista, file, indent=4)
+            
         # Atualizar o saldo do registro
-        registro['saldo'] -= valor
+        registro['saldo'] -= self.valor
         
         palavra = "Saque"
         resultado = palavra.center(50, "=")
@@ -215,7 +266,7 @@ class Pessoas:
         linha = caractere * tamanho
         print(linha)
         
-        hoje = datetime.now()
+        hoje = datetime.now().strftime("%d-%m-%Y")
         print(hoje)
         print(" ")
 
