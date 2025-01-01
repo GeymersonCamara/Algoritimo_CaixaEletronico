@@ -11,6 +11,7 @@ class Pessoas:
         self.nome = None
         self.cpf = None
         self.conta = None
+        self.senha = None
         self.agencia = self.AGENCIA_FIXA  # Atribuindo agência fixa
         self.saldo = 0.0  # Saldo inicial padrão
 
@@ -66,6 +67,14 @@ class Pessoas:
                 break
             except ValueError:
                 print("Erro: Digite um CPF válido (apenas números).")
+        while True:
+            self.senha = int(input("Digite uma senha:"))
+            senha2 = int(input("Confirme sua senha:"))
+            if self.senha == senha2:
+                print("Senha registrada com sucesso!")
+                break
+            else:
+                print("Senha incorreta.")
         self.inserir()
 
     @staticmethod
