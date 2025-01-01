@@ -141,7 +141,14 @@ class Pessoas:
                     item.get("data", "").startswith(data_atual)
                 ):
                     # Extrair hora da data completa
-                    hora = item["data"].split(" ")[1] if " " in item["data"] else "00:00:00"
+                    try:
+                        # Tenta interpretar a string como uma data completa
+                        data_e_hora = datetime.strptime(item["data"], "%d-%m-%Y %H:%M:%S")
+                        hora = data_e_hora.strftime("%H:%M:%S")  # Extrai apenas a hora
+                    except ValueError:
+                        # Caso o formato não seja compatível, usa "00:00:00" como padrão
+                        hora = "00:00:00"
+
                     movimentacoes_hoje.append(
                         {
                             "tipo": "Saque" if item in saques else "Depósito",
@@ -167,7 +174,7 @@ class Pessoas:
     
             # Rodapé
             print("=" * 50)
-            print(datetime.now().strftime("%d-%m-%Y"))
+            print(datetime.now().strftime("%d-%m-%Y  %H:%M:%S"))
     
         except Exception as e:
             print(f"Erro inesperado: {e}")
@@ -186,6 +193,25 @@ class Pessoas:
         except ValueError:
             print("Erro: Digite um valor numérico válido.")
             return
+        
+        #Registro de deposito
+        def valordatadeposito():
+            valor = self.valor
+            data = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            print(f"Valor: {valor} \nData: {data}")
+            return {"valor": valor, "data": data,
+                    "CPF": self.cpf2, "Conta": self.conta2, "Agencia": self.agencia2}
+            
+        try:
+            with open('db/deposito.json', 'r') as file:
+                lista = json.load(file)
+        except Exception:
+            lista = []
+            
+        lista.append(valordatadeposito())
+        
+        with open('db/deposito.json', 'w') as file:
+            json.dump(lista, file, indent=4)
 
         # Atualizar o saldo do registro
         registro['saldo'] += self.valor
@@ -244,9 +270,9 @@ class Pessoas:
             return
 
         #Registro de saque
-        def valordata():
+        def valordatasaque():
             valor = self.valor
-            data = datetime.now().strftime("%d-%m-%Y")
+            data = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             print(f"Valor: {valor} \nData: {data}")
             return {"valor": valor, "data": data,
                     "CPF": self.cpf2, "Conta": self.conta2, "Agencia": self.agencia2}
@@ -259,7 +285,7 @@ class Pessoas:
         except Exception:
             lista = []
             
-        lista.append(valordata())
+        lista.append(valordatasaque())
         
         with open('db/saque.json', 'w') as file:
             json.dump(lista, file, indent=4)
@@ -281,7 +307,7 @@ class Pessoas:
         linha = caractere * tamanho
         print(linha)
         
-        hoje = datetime.now().strftime("%d-%m-%Y")
+        hoje = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         print(hoje)
         print(" ")
 
