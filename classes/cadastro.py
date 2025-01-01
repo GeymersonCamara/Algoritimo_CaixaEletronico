@@ -85,6 +85,7 @@ class Pessoas:
                 self.cpf2 = int(input('CPF: '))
                 self.conta2 = int(input('Conta: '))
                 self.agencia2 = int(input('Agência: '))
+                self.senha2 = int(input('Senha: '))
             except ValueError:
                 print("Erro: Digite apenas números.")
                 return
@@ -107,7 +108,7 @@ class Pessoas:
                 return
 
             for registro in lista:
-                if registro['cpf'] == self.cpf2 and registro['conta'] == self.conta2 and registro['agencia'] == self.agencia2:
+                if registro['cpf'] == self.cpf2 and registro['conta'] == self.conta2 and registro['agencia'] == self.agencia2 and registro['senha'] == self.senha2:
                     # Permite a execução da função decorada
                     return func(self, registro, *args, **kwargs)
 
@@ -250,7 +251,7 @@ class Pessoas:
 
             # Atualizar o registro na lista
             for item in lista:
-                if item['cpf'] == registro['cpf'] and item['conta'] == registro['conta'] and item['agencia'] == registro['agencia']:
+                if item['cpf'] == registro['cpf'] and item['conta'] == registro['conta'] and item['agencia'] == registro['agencia'] and item['senha']:
                     item['saldo'] = registro['saldo']
 
             # Sobrescrever o arquivo JSON com a lista atualizada
