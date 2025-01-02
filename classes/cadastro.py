@@ -189,7 +189,6 @@ class Pessoas:
         except Exception as e:
             print(f"Erro inesperado: {e}")
 
-
     @verificar_usuario
     def depositar(self, registro):
         """
