@@ -1,5 +1,4 @@
 from classes.cadastro import Pessoas
-import tkinter as tk
 
 conta1 = Pessoas()
 
